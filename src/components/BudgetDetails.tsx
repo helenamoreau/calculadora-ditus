@@ -208,8 +208,8 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
         <div className="p-6">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-[#5C005C] mb-1">Ditus Marketing</h1>
-            <p className="text-xl font-medium text-gray-700">Orçamento Personalizado</p>
-            <p className="text-gray-500 mt-2">
+            <p className="text-xl font-medium text-gray-800">Orçamento Personalizado</p>
+            <p className="text-gray-800 mt-2">
               Data: {new Date().toLocaleDateString('pt-BR')} | Válido até: {new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}
             </p>
           </div>
@@ -234,20 +234,20 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                             <span className="font-medium text-gray-800">{service.name}</span>
                             <div className="text-right">
                               {service.prices.oneTime > 0 && (
-                                <div className="text-gray-700">
-                                  R$ {service.prices.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-500 text-sm">único</span>
+                                <div className="text-gray-800">
+                                  R$ {service.prices.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-600 text-sm">único</span>
                                 </div>
                               )}
                               
                               {service.prices.entry > 0 && (
-                                <div className="text-gray-700">
-                                  R$ {service.prices.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-500 text-sm">entrada</span>
+                                <div className="text-gray-800">
+                                  R$ {service.prices.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-600 text-sm">entrada</span>
                                 </div>
                               )}
                               
                               {service.prices.monthly > 0 && (
-                                <div className="text-gray-700">
-                                  R$ {service.prices.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-500 text-sm">/mês</span>
+                                <div className="text-gray-800">
+                                  R$ {service.prices.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})} <span className="text-gray-600 text-sm">/mês</span>
                                 </div>
                               )}
                             </div>
@@ -272,8 +272,8 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Valor de entrada:</span>
-                    <span className="font-medium">
+                    <span className="text-gray-800">Valor de entrada:</span>
+                    <span className="font-medium text-gray-800">
                       {totals.entry > 0 
                         ? `R$ ${totals.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` 
                         : '-'}
@@ -281,8 +281,8 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                   </div>
                   
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Valor único:</span>
-                    <span className="font-medium">
+                    <span className="text-gray-800">Valor único:</span>
+                    <span className="font-medium text-gray-800">
                       {totals.oneTime > 0 
                         ? `R$ ${totals.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` 
                         : '-'}
@@ -290,8 +290,8 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                   </div>
                   
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Valor mensal:</span>
-                    <span className="font-medium">
+                    <span className="text-gray-800">Valor mensal:</span>
+                    <span className="font-medium text-gray-800">
                       {totals.monthly > 0 
                         ? `R$ ${totals.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}/mês` 
                         : '-'}
@@ -300,7 +300,7 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                 </div>
                 
                 <div className="border-t border-gray-300 pt-3 space-y-2">
-                  <div className="flex justify-between font-medium">
+                  <div className="flex justify-between font-medium text-gray-800">
                     <span>Total único:</span>
                     <span>R$ {totalUnique.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                   </div>
@@ -317,7 +317,7 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                   )}
                   
                   {totals.monthly > 0 && (
-                    <div className="flex justify-between font-medium">
+                    <div className="flex justify-between font-medium text-gray-800">
                       <span>Mensal recorrente:</span>
                       <span>
                         R$ {totals.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
@@ -327,19 +327,19 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                 </div>
               </div>
               
-              <div className="mt-6 text-sm text-gray-600">
-                <h4 className="font-semibold text-gray-700 mb-2">Forma de Pagamento:</h4>
+              <div className="mt-6 text-gray-800">
+                <h4 className="font-semibold mb-2">Forma de Pagamento:</h4>
                 <p>
                   {paymentMethod.type === 'pix' ? (
                     "Pix (sem juros)"
                   ) : (
                     paymentMethod.installments === 1 
-                      ? "Cartão de Crédito à vista (+4,20%)" 
+                      ? "Cartão de Crédito à vista" 
                       : `Cartão de Crédito em ${paymentMethod.installments}x`
                   )}
                 </p>
                 
-                <h4 className="font-semibold text-gray-700 mt-4 mb-2">Observações:</h4>
+                <h4 className="font-semibold mt-4 mb-2">Observações:</h4>
                 <ul className="list-disc list-inside space-y-1">
                   <li>Orçamento válido por 10 dias.</li>
                   <li>A entrada é paga no 1º mês; as mensalidades começam no 2º mês.</li>
