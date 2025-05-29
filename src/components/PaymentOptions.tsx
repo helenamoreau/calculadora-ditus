@@ -64,18 +64,14 @@ export const PaymentOptions: React.FC<PaymentOptionsProps> = ({
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => (
                 <button
                   key={i}
-                  className={`py-1.5 rounded text-xs font-medium transition-all ${
+                  className={`py-1.5 rounded text-sm font-medium transition-all ${
                     paymentMethod.installments === i
                       ? 'bg-[#5C005C] text-white'
                       : 'bg-gray-800/50 text-white/70 hover:bg-gray-800'
                   }`}
                   onClick={() => handleInstallmentsChange(i)}
                 >
-                  {i}x {i > 1 && 
-                    <span className="block text-[10px]">
-                      +{getCreditFeePercentage(i).toFixed(2)}%
-                    </span>
-                  }
+                  {i}x
                 </button>
               ))}
             </div>
