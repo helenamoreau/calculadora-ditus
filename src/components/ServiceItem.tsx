@@ -55,39 +55,46 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
 
   const handleInputChange = (option: any, e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 0;
-    const constrainedValue = Math.max(option.min || 0, Math.min(option.max || Infinity, value));
-    handleOptionChange(option.id, constrainedValue);
+    handleOptionChange(option.id, value);
   };
 
   const renderQuantityControl = (option: any) => {
-    const value = selectedOptions[option.id] || option.default || option.min || 0;
+    const value = selectedOptions[option.id] || option.default || 0;
+    const isValidValue = value >= (option.min || 0);
     
     return (
-      <div className="flex items-center space-x-3">
-        <button
-          type="button"
-          onClick={() => handleOptionChange(option.id, Math.max(option.min || 0, value - 1))}
-          className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
-          disabled={value <= (option.min || 0)}
-        >
-          <Minus size={16} />
-        </button>
-        <input
-          type="number"
-          value={value}
-          onChange={(e) => handleInputChange(option, e)}
-          className="bg-transparent text-white text-center w-16 focus:outline-none focus:ring-1 focus:ring-[#5C005C] rounded"
-          min={option.min || 0}
-          max={option.max}
-        />
-        <button
-          type="button"
-          onClick={() => handleOptionChange(option.id, Math.min(option.max || Infinity, value + 1))}
-          className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
-          disabled={value >= (option.max || Infinity)}
-        >
-          <Plus size={16} />
-        </button>
+      <div className="space-y-2">
+        <div className="flex items-center space-x-3">
+          <button
+            type="button"
+            onClick={() => handleOptionChange(option.id, Math.max(0, value - 1))}
+            className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Minus size={16} />
+          </button>
+          <input
+            type="number"
+            value={value}
+            onChange={(e) => handleInputChange(option, e)}
+            className="bg-transparent text-white text-center w-16 focus:outline-none focus:ring-1 focus:ring-[#5C005C] rounded"
+            min={0}
+            max={option.max}
+          />
+          <button
+            type="button"
+            onClick={() => handleOptionChange(option.id, value + 1)}
+            className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={option.max !== undefined && value >= option.max}
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+        
+        {!isValidValue && (
+          <p className="text-red-400 text-sm">
+            Quantidade mínima: {option.min}. Este serviço só será incluído se atingir a quantidade mínima.
+          </p>
+        )}
       </div>
     );
   };

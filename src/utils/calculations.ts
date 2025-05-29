@@ -12,8 +12,10 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
       switch (service.id) {
         case 'blog-seo':
           // Blog SEO - R$ 79.90 per article
-          const articleQuantity = Math.max(1, Math.min(30, service.options.articleQuantity || 1));
-          monthly = 79.90 * articleQuantity;
+          const articleQuantity = service.options.articleQuantity || 0;
+          if (articleQuantity >= 1) {
+            monthly = 79.90 * Math.min(30, articleQuantity);
+          }
           break;
 
         case 'social-templates':
@@ -43,7 +45,10 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
         case 'professional-emails':
           // E-mails Profissionais
           const emailPrice = service.options.emailCapacity === '50gb' ? 20 : 15;
-          monthly = emailPrice * (service.options.emailQuantity || 1);
+          const emailQuantity = service.options.emailQuantity || 0;
+          if (emailQuantity >= 1) {
+            monthly = emailPrice * emailQuantity;
+          }
           break;
 
         case 'google-ads':
@@ -51,32 +56,42 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
         case 'tiktok-ads':
         case 'linkedin-ads':
           // Tráfego Pago
-          entry = 500; // Fixed entry fee
-          monthly = 490; // Fixed monthly fee
-          paidTraffic = Number(service.options.monthlyBudget) || 0;
+          const budget = Number(service.options.monthlyBudget) || 0;
+          if (budget >= 500) {
+            entry = 500;
+            monthly = 490;
+            paidTraffic = budget;
+          }
           break;
 
         case 'professional-photos':
           // Fotos Profissionais
-          const photoQuantity = Math.max(10, service.options.photoQuantity || 10);
-          oneTime = photoQuantity * 49;
+          const photoQuantity = service.options.photoQuantity || 0;
+          if (photoQuantity >= 10) {
+            oneTime = photoQuantity * 49;
+          }
           break;
 
         case 'drone-recording':
           // Gravação com Drone
-          const droneDays = Math.max(1, service.options.dayQuantity || 1);
-          oneTime = droneDays * 690;
+          const droneDays = service.options.dayQuantity || 0;
+          if (droneDays >= 1) {
+            oneTime = droneDays * 690;
+          }
           break;
 
         case 'members-area-design':
           // Design Área de Membros
-          entry = 1200 + ((service.options.coverQuantity || 0) * 100);
+          const coverQuantity = service.options.coverQuantity || 0;
+          entry = 1200 + (coverQuantity * 100);
           break;
 
         case 'ebook':
           // E-book
-          const pageQuantity = Math.max(5, service.options.pageQuantity || 5);
-          oneTime = pageQuantity * 49;
+          const pageQuantity = service.options.pageQuantity || 0;
+          if (pageQuantity >= 5) {
+            oneTime = pageQuantity * 49;
+          }
           break;
 
         case 'video-hosting':
@@ -92,8 +107,10 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
 
         case 'community-management':
           // Gestão de Comunidade
-          const platformQuantity = Math.max(1, service.options.platformQuantity || 1);
-          monthly = 990 * platformQuantity;
+          const platformQuantity = service.options.platformQuantity || 0;
+          if (platformQuantity >= 1) {
+            monthly = 990 * platformQuantity;
+          }
           break;
 
         default:
