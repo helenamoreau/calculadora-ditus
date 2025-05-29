@@ -10,11 +10,51 @@ import { ServiceCategory } from '../types';
 
 export const servicesData: ServiceCategory[] = [
   {
+    id: 'diagnostic',
+    name: 'Diagnóstico',
+    description: 'Descubra exatamente onde o seu negócio pode melhorar para crescer com mais eficiência',
+    icon: <Search size={20} />,
+    services: [
+      {
+        id: 'marketing-diagnostic',
+        name: 'Diagnóstico de Marketing',
+        description: 'Análise completa da presença digital do seu negócio: identidade visual, site, redes sociais, Google, SEO, anúncios e muito mais. Você recebe um relatório estratégico em PDF com avaliação dos pontos fortes e pontos de melhoria, entregue em até 2 dias após a contratação',
+        prices: {
+          oneTime: 97
+        }
+      },
+      {
+        id: 'diagnostic-consulting',
+        name: 'Consultoria de Diagnóstico',
+        description: 'Análise orientada com insights estratégicos sobre presença digital, ideal para quem deseja aplicar as melhorias por conta própria. Inclui 1 reunião online de até 60 minutos com orientação prática sobre os pontos identificados no diagnóstico',
+        prices: {
+          oneTime: 290
+        }
+      }
+    ]
+  },
+  {
     id: 'design',
     name: 'Design & Marca',
     description: 'Primeira impressão do seu negócio',
     icon: <Palette size={20} />,
     services: [
+      {
+        id: 'visual-identity',
+        name: 'Identidade Visual',
+        description: 'Criação completa da identidade visual da sua marca, incluindo logotipo, paleta de cores e tipografia',
+        prices: {
+          oneTime: 490
+        }
+      },
+      {
+        id: 'brandbook',
+        name: 'BrandBook',
+        description: 'Manual completo de identidade visual para uso prático da marca',
+        prices: {
+          oneTime: 1490
+        }
+      },
       {
         id: 'social-templates',
         name: 'Templates Editáveis',
@@ -34,22 +74,6 @@ export const servicesData: ServiceCategory[] = [
             ]
           }
         ]
-      },
-      {
-        id: 'visual-identity',
-        name: 'Identidade Visual',
-        description: 'Criação completa da identidade visual da sua marca, incluindo logotipo, paleta de cores e tipografia',
-        prices: {
-          oneTime: 490
-        }
-      },
-      {
-        id: 'brandbook',
-        name: 'BrandBook',
-        description: 'Manual completo de identidade visual para uso prático da marca',
-        prices: {
-          oneTime: 1490
-        }
       },
       {
         id: 'visual-identity-consulting',
@@ -134,30 +158,6 @@ export const servicesData: ServiceCategory[] = [
         description: 'Planejamento estratégico para criação ou aprimoramento do site, escolha de recursos e plataformas ideais. Indicado para quem vai desenvolver o próprio site ou contratar terceiros',
         prices: {
           oneTime: 1900
-        }
-      }
-    ]
-  },
-  {
-    id: 'diagnostic',
-    name: 'Diagnóstico',
-    description: 'Descubra exatamente onde o seu negócio pode melhorar para crescer com mais eficiência',
-    icon: <Search size={20} />,
-    services: [
-      {
-        id: 'marketing-diagnostic',
-        name: 'Diagnóstico de Marketing',
-        description: 'Análise completa da presença digital do seu negócio: identidade visual, site, redes sociais, Google, SEO, anúncios e muito mais. Você recebe um relatório estratégico em PDF com avaliação dos pontos fortes e pontos de melhoria, entregue em até 2 dias após a contratação',
-        prices: {
-          oneTime: 97
-        }
-      },
-      {
-        id: 'diagnostic-consulting',
-        name: 'Consultoria de Diagnóstico',
-        description: 'Análise orientada com insights estratégicos sobre presença digital, ideal para quem deseja aplicar as melhorias por conta própria. Inclui 1 reunião online de até 60 minutos com orientação prática sobre os pontos identificados no diagnóstico',
-        prices: {
-          oneTime: 290
         }
       }
     ]
