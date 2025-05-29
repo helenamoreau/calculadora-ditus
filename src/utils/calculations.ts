@@ -57,13 +57,16 @@ export const calculateFees = (amount: number, paymentMethod: PaymentMethod): num
 
 export const calculateInstallmentValue = (amount: number, installments: number): number => {
   const totalWithFees = amount * (1 + getCreditFeePercentage(installments) / 100);
-  return totalWithFees / installments;
+  const installmentValue = totalWithFees / installments;
+  return Number(installmentValue.toFixed(2));
 };
 
 export const formatCurrency = (value: number): string => {
   return value.toLocaleString('pt-BR', {
     style: 'currency',
-    currency: 'BRL'
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   });
 };
 

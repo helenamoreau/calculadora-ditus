@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { X, Printer, Mail, Download, Send } from 'lucide-react';
 import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment, TransportInfo } from '../types';
-import { calculateTotals, calculateFees } from '../utils/calculations';
+import { calculateTotals, calculateFees, calculateInstallmentValue } from '../utils/calculations';
 import { getCategoryById } from '../data/servicesData';
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
@@ -89,6 +89,9 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
   const totals = calculateTotals(selectedServices);
   const totalUnique = totals.entry + totals.oneTime;
   const totalWithFees = calculateFees(totalUnique, paymentMethod);
+  const installmentValue = paymentMethod.type === 'credit' && paymentMethod.installments > 1
+    ? (totalWithFees / paymentMethod.installments).toFixed(2)
+    : '0.00';
 
   const formatWhatsAppMessage = () => {
     let message = "Olá, tenho interesse nesse orçamento\n\n";
@@ -272,7 +275,7 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between">
-                    <span className="text-gray-800">Valor de entrada:</span>
+                    <span className="text-gray-800">Total entrada:</span>
                     <span className="font-medium text-gray-800">
                       {totals.entry > 0 
                         ? `R$ ${totals.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` 
@@ -301,17 +304,17 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
                 
                 <div className="border-t border-gray-300 pt-3 space-y-2">
                   <div className="flex justify-between font-medium text-gray-800">
-                    <span>Total único:</span>
+                    <span>Total entrada:</span>
                     <span>R$ {totalUnique.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                   </div>
                   
                   {paymentMethod.type === 'credit' && paymentMethod.installments > 1 && (
                     <div className="flex justify-between text-[#5C005C] font-medium">
                       <span>
-                        Total com taxas ({paymentMethod.installments}x):
+                        Parcelado em {paymentMethod.installments}x de:
                       </span>
                       <span>
-                        R$ {totalWithFees.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        R$ {Number(installmentValue).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                       </span>
                     </div>
                   )}
