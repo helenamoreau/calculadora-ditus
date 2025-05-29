@@ -6,41 +6,108 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
       let entry = service.prices.entry || 0;
       let oneTime = service.prices.oneTime || 0;
       let monthly = service.prices.monthly || 0;
-      
-      // Calculate paid traffic budget if applicable
-      const paidTrafficBudget = service.options?.monthlyBudget || 0;
+      let paidTraffic = 0;
 
-      // Special handling for Templates Editáveis
-      if (service.id === 'social-templates' && service.options.templateTypes) {
-        oneTime = service.options.templateTypes.reduce((total: number, type: string) => {
-          switch (type) {
-            case 'instagram':
-              return total + 2490;
-            case 'youtube':
-              return total + 1340;
-            case 'linkedin':
-              return total + 940;
-            default:
-              return total;
+      // Handle special cases based on service ID
+      switch (service.id) {
+        case 'social-templates':
+          // Templates Editáveis
+          if (service.options.templateTypes) {
+            oneTime = service.options.templateTypes.reduce((total: number, type: string) => {
+              const prices = {
+                'instagram': 2490,
+                'youtube': 1340,
+                'linkedin': 940
+              };
+              return total + (prices[type as keyof typeof prices] || 0);
+            }, 0);
           }
-        }, 0);
+          break;
+
+        case 'email-campaigns':
+          // Campanhas Profissionais
+          const campaignPrices = {
+            '500': 590,
+            '5000': 790,
+            '1m': 990
+          };
+          monthly = campaignPrices[service.options.contactLimit as keyof typeof campaignPrices] || 590;
+          break;
+
+        case 'professional-emails':
+          // E-mails Profissionais
+          const emailPrice = service.options.emailCapacity === '50gb' ? 20 : 15;
+          monthly = emailPrice * (service.options.emailQuantity || 1);
+          break;
+
+        case 'google-ads':
+        case 'meta-ads':
+        case 'tiktok-ads':
+        case 'linkedin-ads':
+          // Tráfego Pago
+          entry = 500; // Fixed entry fee
+          monthly = 490; // Fixed monthly fee
+          paidTraffic = Number(service.options.monthlyBudget) || 0;
+          break;
+
+        case 'professional-photos':
+          // Fotos Profissionais
+          const photoQuantity = Math.max(10, service.options.photoQuantity || 10);
+          oneTime = photoQuantity * 49;
+          break;
+
+        case 'drone-recording':
+          // Gravação com Drone
+          const droneDays = Math.max(1, service.options.dayQuantity || 1);
+          oneTime = droneDays * 690;
+          break;
+
+        case 'members-area-design':
+          // Design Área de Membros
+          entry = 1200 + ((service.options.coverQuantity || 0) * 100);
+          break;
+
+        case 'ebook':
+          // E-book
+          const pageQuantity = Math.max(5, service.options.pageQuantity || 5);
+          oneTime = pageQuantity * 49;
+          break;
+
+        case 'video-hosting':
+          // Hospedagem de Vídeos
+          const storagePrices = {
+            '100gb': 49,
+            '200gb': 90,
+            '500gb': 190,
+            '1tb': 390
+          };
+          monthly = storagePrices[service.options.storage as keyof typeof storagePrices] || 49;
+          break;
+
+        case 'community-management':
+          // Gestão de Comunidade
+          const platformQuantity = Math.max(1, service.options.platformQuantity || 1);
+          monthly = 990 * platformQuantity;
+          break;
+
+        default:
+          break;
       }
 
       return {
         entry: acc.entry + entry,
         oneTime: acc.oneTime + oneTime,
         monthly: acc.monthly + monthly,
-        paidTraffic: acc.paidTraffic + paidTrafficBudget
+        paidTraffic: acc.paidTraffic + paidTraffic
       };
     },
     { entry: 0, oneTime: 0, monthly: 0, paidTraffic: 0 }
   );
 
-  // Calculate 5% fee for paid traffic and add it to monthly total
+  // Calculate 5% fee for paid traffic
   const paidTrafficFee = totals.paidTraffic * 0.05;
 
   return {
-    ...totals,
     uniqueTotal: totals.entry + totals.oneTime, // Total of one-time payments and entry fees
     monthlyTotal: totals.monthly + paidTrafficFee, // Total monthly recurring payments including paid traffic fee
     paidTrafficTotal: totals.paidTraffic // Total paid traffic budget without fee

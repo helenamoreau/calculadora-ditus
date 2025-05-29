@@ -77,7 +77,8 @@ export const TransportCalculator: React.FC<TransportCalculatorProps> = ({
         setTransport(prev => ({
           ...prev,
           distance: roundTripDistance,
-          cost: cost
+          cost: cost,
+          days: 1 // Initialize with 1 day
         }));
       } else {
         throw new Error('Não foi possível calcular a distância');
@@ -204,7 +205,7 @@ export const TransportCalculator: React.FC<TransportCalculatorProps> = ({
               disabled={isLoading}
               className="w-full bg-[#5C005C] hover:bg-[#4a004a] text-white py-2 rounded-lg font-medium transition-colors"
             >
-              {isLoading ? 'Calculando...' : 'Calcular Distância'}
+              {isLoading ? 'Calculando...' : 'Calcular Transporte'}
             </button>
           )}
 
