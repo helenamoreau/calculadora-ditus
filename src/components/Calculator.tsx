@@ -71,6 +71,7 @@ export const Calculator: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
+          {/* Service Sections */}
           {servicesData.map((category) => (
             <ServiceSection
               key={category.id}
@@ -80,7 +81,14 @@ export const Calculator: React.FC = () => {
               updateServiceOptions={updateServiceOptions}
             />
           ))}
-          
+
+          {/* Client Info Form */}
+          <ClientInfoForm 
+            clientInfo={clientInfo}
+            setClientInfo={setClientInfo}
+          />
+
+          {/* Transport Calculator */}
           {hasOnSiteServices && (
             <TransportCalculator
               transport={transport}
@@ -91,6 +99,7 @@ export const Calculator: React.FC = () => {
         
         <div className="md:col-span-1">
           <div className="sticky top-4 space-y-6">
+            {/* Summary */}
             <Summary 
               selectedServices={selectedServices} 
               paymentMethod={paymentMethod}
@@ -100,25 +109,25 @@ export const Calculator: React.FC = () => {
               showBudgetDetails={() => setShowBudgetDetails(true)}
             />
             
+            {/* Payment Options */}
             <PaymentOptions 
               paymentMethod={paymentMethod}
               setPaymentMethod={setPaymentMethod}
             />
             
-            <RecurringPaymentOptions
-              recurringPayment={recurringPayment}
-              setRecurringPayment={setRecurringPayment}
-              hasRecurringServices={hasRecurringServices}
-            />
-            
-            <ClientInfoForm 
-              clientInfo={clientInfo}
-              setClientInfo={setClientInfo}
-            />
+            {/* Recurring Payment Options */}
+            {hasRecurringServices && (
+              <RecurringPaymentOptions
+                recurringPayment={recurringPayment}
+                setRecurringPayment={setRecurringPayment}
+                hasRecurringServices={hasRecurringServices}
+              />
+            )}
           </div>
         </div>
       </div>
 
+      {/* Budget Details Modal */}
       {showBudgetDetails && (
         <BudgetDetails
           selectedServices={selectedServices}
