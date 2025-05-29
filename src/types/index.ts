@@ -21,7 +21,7 @@ export interface Service {
 export interface ServiceOption {
   id: string;
   label: string;
-  type: 'select' | 'number' | 'text';
+  type: 'select' | 'number' | 'text' | 'slider' | 'multiselect';
   default?: any;
   min?: number;
   max?: number;

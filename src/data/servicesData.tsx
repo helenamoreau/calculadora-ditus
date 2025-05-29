@@ -10,35 +10,31 @@ import { ServiceCategory } from '../types';
 
 export const servicesData: ServiceCategory[] = [
   {
-    id: 'diagnostic',
-    name: 'Diagnóstico',
-    description: 'Descubra exatamente onde o seu negócio pode melhorar para crescer com mais eficiência',
-    icon: <Search size={20} />,
-    services: [
-      {
-        id: 'marketing-diagnostic',
-        name: 'Diagnóstico de Marketing',
-        description: 'Análise completa da presença digital do seu negócio: identidade visual, site, redes sociais, Google, SEO, anúncios e muito mais. Você recebe um relatório estratégico em PDF com avaliação dos pontos fortes e pontos de melhoria, entregue em até 2 dias após a contratação',
-        prices: {
-          oneTime: 97
-        }
-      },
-      {
-        id: 'diagnostic-consulting',
-        name: 'Consultoria de Diagnóstico',
-        description: 'Análise orientada com insights estratégicos sobre presença digital, ideal para quem deseja aplicar as melhorias por conta própria. Inclui 1 reunião online de até 60 minutos com orientação prática sobre os pontos identificados no diagnóstico',
-        prices: {
-          oneTime: 290
-        }
-      }
-    ]
-  },
-  {
     id: 'design',
     name: 'Design & Marca',
     description: 'Primeira impressão do seu negócio',
     icon: <Palette size={20} />,
     services: [
+      {
+        id: 'social-templates',
+        name: 'Templates Editáveis',
+        description: 'Artes estáticas e animadas editáveis, prontos para uso nas redes sociais, ideal para quem não pode contratar gerenciamento de redes sociais. Observação: Na escolha de qualquer template, ganha edição da foto de perfil e criação da capa para o WhatsApp Business.',
+        prices: {
+          oneTime: 0 // Price will be calculated based on selected options
+        },
+        options: [
+          {
+            id: 'templateTypes',
+            label: 'Tipos de Template',
+            type: 'multiselect',
+            choices: [
+              { value: 'instagram', label: 'Instagram e Facebook (36 artes) - R$ 2.490' },
+              { value: 'youtube', label: 'Youtube (15 artes) - R$ 1.340' },
+              { value: 'linkedin', label: 'LinkedIn (11 artes) - R$ 940' }
+            ]
+          }
+        ]
+      },
       {
         id: 'visual-identity',
         name: 'Identidade Visual',
@@ -56,31 +52,54 @@ export const servicesData: ServiceCategory[] = [
         }
       },
       {
-        id: 'social-templates',
-        name: 'Templates Editáveis',
-        description: 'Artes estáticas e animadas editáveis, prontos para uso nas redes sociais, ideal para quem não pode contratar gerenciamento de redes sociais',
-        prices: {
-          oneTime: 2490
-        },
-        options: [
-          {
-            id: 'templateType',
-            label: 'Tipo de Template',
-            type: 'select',
-            choices: [
-              { value: 'instagram', label: 'Instagram e Facebook (36 artes) - R$ 2.490' },
-              { value: 'youtube', label: 'Youtube (15 artes) - R$ 1.340' },
-              { value: 'linkedin', label: 'LinkedIn (11 artes) - R$ 940' }
-            ]
-          }
-        ]
-      },
-      {
         id: 'visual-identity-consulting',
         name: 'Consultoria de Identidade Visual',
         description: 'Orientação criativa para construção ou refinamento da identidade visual do negócio. Ideal para quem quer desenvolver por conta própria com segurança estética e técnica. Inclui feedback de referência, paleta e tipografia',
         prices: {
           oneTime: 1900
+        }
+      }
+    ]
+  },
+  {
+    id: 'content-seo',
+    name: 'Conteúdo e SEO',
+    description: 'Atrair o cliente certo sem depender de anúncios',
+    icon: <FileText size={20} />,
+    services: [
+      {
+        id: 'blog-seo',
+        name: 'Blog SEO',
+        description: 'Artigos otimizados para buscas do Google e IA como o ChatGPT. Inclui pesquisa de palavras-chave, pauta, redação com SEO técnico e estratégia de conversão',
+        prices: {
+          monthly: 79.90
+        },
+        options: [
+          {
+            id: 'articleQuantity',
+            label: 'Quantidade de Artigos Mensais',
+            type: 'slider',
+            default: 1,
+            min: 1,
+            max: 30
+          }
+        ]
+      },
+      {
+        id: 'google-business',
+        name: 'Google Meu Negócio',
+        description: 'Gestão e otimização completa do perfil, com postagens, respostas e estratégias de visibilidade local',
+        prices: {
+          entry: 490,
+          monthly: 149
+        }
+      },
+      {
+        id: 'content-seo-consulting',
+        name: 'Consultoria de Conteúdo e SEO',
+        description: 'Orientações sobre criação de artigos otimizados, definição de pauta, palavras-chave e estrutura técnica. Ideal para quem vai escrever por conta própria ou terceirizar com freelancers',
+        prices: {
+          oneTime: 990
         }
       }
     ]
@@ -115,6 +134,30 @@ export const servicesData: ServiceCategory[] = [
         description: 'Planejamento estratégico para criação ou aprimoramento do site, escolha de recursos e plataformas ideais. Indicado para quem vai desenvolver o próprio site ou contratar terceiros',
         prices: {
           oneTime: 1900
+        }
+      }
+    ]
+  },
+  {
+    id: 'diagnostic',
+    name: 'Diagnóstico',
+    description: 'Descubra exatamente onde o seu negócio pode melhorar para crescer com mais eficiência',
+    icon: <Search size={20} />,
+    services: [
+      {
+        id: 'marketing-diagnostic',
+        name: 'Diagnóstico de Marketing',
+        description: 'Análise completa da presença digital do seu negócio: identidade visual, site, redes sociais, Google, SEO, anúncios e muito mais. Você recebe um relatório estratégico em PDF com avaliação dos pontos fortes e pontos de melhoria, entregue em até 2 dias após a contratação',
+        prices: {
+          oneTime: 97
+        }
+      },
+      {
+        id: 'diagnostic-consulting',
+        name: 'Consultoria de Diagnóstico',
+        description: 'Análise orientada com insights estratégicos sobre presença digital, ideal para quem deseja aplicar as melhorias por conta própria. Inclui 1 reunião online de até 60 minutos com orientação prática sobre os pontos identificados no diagnóstico',
+        prices: {
+          oneTime: 290
         }
       }
     ]
@@ -255,49 +298,6 @@ export const servicesData: ServiceCategory[] = [
         prices: {
           entry: 7000,
           monthly: 990
-        }
-      }
-    ]
-  },
-  {
-    id: 'content-seo',
-    name: 'Conteúdo e SEO',
-    description: 'Atrair o cliente certo sem depender de anúncios',
-    icon: <FileText size={20} />,
-    services: [
-      {
-        id: 'blog-seo',
-        name: 'Blog SEO',
-        description: 'Artigos otimizados para buscas do Google e IA como o ChatGPT. Inclui pesquisa de palavras-chave, pauta, redação com SEO técnico e estratégia de conversão',
-        prices: {
-          monthly: 79.90
-        },
-        options: [
-          {
-            id: 'articleQuantity',
-            label: 'Quantidade de Artigos Mensais',
-            type: 'number',
-            default: 1,
-            min: 0,
-            max: 30
-          }
-        ]
-      },
-      {
-        id: 'google-business',
-        name: 'Google Meu Negócio',
-        description: 'Gestão e otimização completa do perfil, com postagens, respostas e estratégias de visibilidade local',
-        prices: {
-          entry: 490,
-          monthly: 149
-        }
-      },
-      {
-        id: 'content-seo-consulting',
-        name: 'Consultoria de Conteúdo e SEO',
-        description: 'Orientações sobre criação de artigos otimizados, definição de pauta, palavras-chave e estrutura técnica. Ideal para quem vai escrever por conta própria ou terceirizar com freelancers',
-        prices: {
-          oneTime: 990
         }
       }
     ]
