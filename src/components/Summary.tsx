@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment } from '../types';
+import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment, TransportInfo } from '../types';
 import { calculateTotals, calculateFees } from '../utils/calculations';
 
 interface SummaryProps {
@@ -8,12 +8,14 @@ interface SummaryProps {
   paymentMethod: PaymentMethod;
   clientInfo: ClientInfo;
   recurringPayment: RecurringPayment;
+  transport: TransportInfo;
   showBudgetDetails: () => void;
 }
 
 export const Summary: React.FC<SummaryProps> = ({
   selectedServices,
   paymentMethod,
+  transport,
   showBudgetDetails
 }) => {
   const [totals, setTotals] = useState({
@@ -25,18 +27,16 @@ export const Summary: React.FC<SummaryProps> = ({
 
   useEffect(() => {
     const calculatedTotals = calculateTotals(selectedServices);
-    const totalWithFees = calculateFees(
-      calculatedTotals.uniqueTotal,
-      paymentMethod
-    );
+    const totalWithTransport = calculatedTotals.uniqueTotal + (transport.cost * transport.days);
+    const totalWithFees = calculateFees(totalWithTransport, paymentMethod);
     
     setTotals({
-      uniqueTotal: calculatedTotals.uniqueTotal,
+      uniqueTotal: totalWithTransport,
       monthlyTotal: calculatedTotals.monthlyTotal,
       paidTrafficTotal: calculatedTotals.paidTrafficTotal,
       withFees: totalWithFees
     });
-  }, [selectedServices, paymentMethod]);
+  }, [selectedServices, paymentMethod, transport]);
 
   return (
     <div className="bg-gradient-to-br from-[#3a0d44] to-[#1a0c20] rounded-lg shadow-lg p-6">
@@ -72,6 +72,15 @@ export const Summary: React.FC<SummaryProps> = ({
                 <span className="text-white/80">Tráfego pago (com 5%):</span>
                 <span className="text-white font-medium">
                   R$ {totals.paidTrafficTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}/mês
+                </span>
+              </div>
+            )}
+
+            {transport.cost > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-white/80">Transporte ({transport.days} {transport.days === 1 ? 'dia' : 'dias'}):</span>
+                <span className="text-white font-medium">
+                  R$ {(transport.cost * transport.days).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                 </span>
               </div>
             )}

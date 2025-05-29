@@ -5,8 +5,9 @@ import { BudgetDetails } from './BudgetDetails';
 import { PaymentOptions } from './PaymentOptions';
 import { RecurringPaymentOptions } from './RecurringPaymentOptions';
 import { ClientInfoForm } from './ClientInfoForm';
+import { TransportCalculator } from './TransportCalculator';
 import { servicesData } from '../data/servicesData';
-import { SelectedService, PaymentMethod, RecurringPayment, ClientInfo } from '../types';
+import { SelectedService, PaymentMethod, RecurringPayment, ClientInfo, TransportInfo } from '../types';
 
 export const Calculator: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
@@ -23,6 +24,11 @@ export const Calculator: React.FC = () => {
     businessName: '',
     contactName: '',
     whatsapp: ''
+  });
+  const [transport, setTransport] = useState<TransportInfo>({
+    distance: 0,
+    cost: 0,
+    days: 1
   });
 
   const toggleService = (service: SelectedService) => {
@@ -48,6 +54,9 @@ export const Calculator: React.FC = () => {
   };
 
   const hasRecurringServices = selectedServices.some(service => service.prices.monthly > 0);
+  const hasOnSiteServices = selectedServices.some(service => 
+    ['professional-videos', 'professional-photos', 'drone-recording', 'presential-sales-training'].includes(service.id)
+  );
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -71,6 +80,13 @@ export const Calculator: React.FC = () => {
               updateServiceOptions={updateServiceOptions}
             />
           ))}
+          
+          {hasOnSiteServices && (
+            <TransportCalculator
+              transport={transport}
+              setTransport={setTransport}
+            />
+          )}
         </div>
         
         <div className="md:col-span-1">
@@ -80,6 +96,7 @@ export const Calculator: React.FC = () => {
               paymentMethod={paymentMethod}
               clientInfo={clientInfo}
               recurringPayment={recurringPayment}
+              transport={transport}
               showBudgetDetails={() => setShowBudgetDetails(true)}
             />
             
@@ -108,6 +125,7 @@ export const Calculator: React.FC = () => {
           paymentMethod={paymentMethod}
           clientInfo={clientInfo}
           recurringPayment={recurringPayment}
+          transport={transport}
           onClose={() => setShowBudgetDetails(false)}
         />
       )}

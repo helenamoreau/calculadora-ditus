@@ -66,3 +66,7 @@ export const formatCurrency = (value: number): string => {
     currency: 'BRL'
   });
 };
+
+export const calculateTransportCost = (distance: number): number => {
+  return distance * 4; // R$ 4,00 per km
+};
