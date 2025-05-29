@@ -68,6 +68,7 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
           type="button"
           onClick={() => handleOptionChange(option.id, Math.max(option.min || 0, value - 1))}
           className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
+          disabled={value <= (option.min || 0)}
         >
           <Minus size={16} />
         </button>
@@ -83,6 +84,7 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
           type="button"
           onClick={() => handleOptionChange(option.id, Math.min(option.max || Infinity, value + 1))}
           className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
+          disabled={value >= (option.max || Infinity)}
         >
           <Plus size={16} />
         </button>

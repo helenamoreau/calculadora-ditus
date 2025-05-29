@@ -10,6 +10,12 @@ export const calculateTotals = (selectedServices: SelectedService[]) => {
 
       // Handle special cases based on service ID
       switch (service.id) {
+        case 'blog-seo':
+          // Blog SEO - R$ 79.90 per article
+          const articleQuantity = Math.max(1, Math.min(30, service.options.articleQuantity || 1));
+          monthly = 79.90 * articleQuantity;
+          break;
+
         case 'social-templates':
           // Templates Editáveis
           if (service.options.templateTypes) {
