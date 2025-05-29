@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Service, SelectedService } from '../types';
+import { Plus, Minus } from 'lucide-react';
 
 interface ServiceItemProps {
   service: Service;
@@ -19,11 +20,24 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
   updateOptions
 }) => {
   const handleToggle = () => {
+    const initialOptions: Record<string, any> = {};
+    
+    // Set default values for options
+    service.options?.forEach(option => {
+      if (option.type === 'multiselect') {
+        initialOptions[option.id] = [];
+      } else if (option.type === 'number' || option.type === 'slider') {
+        initialOptions[option.id] = option.default || option.min || 0;
+      } else {
+        initialOptions[option.id] = option.default || '';
+      }
+    });
+
     toggleService({
       id: service.id,
       name: service.name,
       category,
-      options: selectedOptions,
+      options: isSelected ? {} : initialOptions,
       prices: {
         entry: service.prices.entry || 0,
         monthly: service.prices.monthly || 0,
@@ -37,6 +51,30 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
       ...selectedOptions,
       [optionId]: value
     });
+  };
+
+  const renderQuantityControl = (option: any) => {
+    const value = selectedOptions[option.id] || option.default || option.min || 0;
+    
+    return (
+      <div className="flex items-center space-x-3">
+        <button
+          type="button"
+          onClick={() => handleOptionChange(option.id, Math.max(option.min || 0, value - 1))}
+          className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
+        >
+          <Minus size={16} />
+        </button>
+        <span className="text-white min-w-[40px] text-center">{value}</span>
+        <button
+          type="button"
+          onClick={() => handleOptionChange(option.id, Math.min(option.max || Infinity, value + 1))}
+          className="bg-[#5C005C]/20 hover:bg-[#5C005C]/30 text-white p-2 rounded"
+        >
+          <Plus size={16} />
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -80,16 +118,29 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
                   </select>
                 )}
                 
-                {option.type === 'number' && (
-                  <input
-                    type="number"
-                    className="w-full bg-[#1a0c20] border border-gray-700 rounded px-3 py-2 text-white/90"
-                    value={selectedOptions[option.id] || option.default || 0}
-                    onChange={(e) => handleOptionChange(option.id, parseInt(e.target.value, 10))}
-                    min={option.min || 0}
-                    max={option.max}
-                  />
+                {option.type === 'multiselect' && (
+                  <div className="space-y-2">
+                    {option.choices?.map((choice) => (
+                      <label key={choice.value} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={(selectedOptions[option.id] || []).includes(choice.value)}
+                          onChange={(e) => {
+                            const currentValues = selectedOptions[option.id] || [];
+                            const newValues = e.target.checked
+                              ? [...currentValues, choice.value]
+                              : currentValues.filter((v: string) => v !== choice.value);
+                            handleOptionChange(option.id, newValues);
+                          }}
+                          className="rounded border-gray-700 text-[#5C005C] focus:ring-[#5C005C]"
+                        />
+                        <span className="text-white/90">{choice.label}</span>
+                      </label>
+                    ))}
+                  </div>
                 )}
+                
+                {(option.type === 'number' || option.type === 'slider') && renderQuantityControl(option)}
               </div>
             ))}
           </div>
