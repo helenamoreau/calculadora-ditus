@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment, TransportInfo } from '../types';
-import { calculateTotals, calculateFees } from '../utils/calculations';
+import { calculateTotals, calculateFees, calculateInstallmentValue } from '../utils/calculations';
 
 interface SummaryProps {
   selectedServices: SelectedService[];
@@ -22,19 +22,22 @@ export const Summary: React.FC<SummaryProps> = ({
     uniqueTotal: 0,
     monthlyTotal: 0,
     paidTrafficTotal: 0,
-    withFees: 0
+    withFees: 0,
+    installmentValue: 0
   });
 
   useEffect(() => {
     const calculatedTotals = calculateTotals(selectedServices);
     const totalWithTransport = calculatedTotals.uniqueTotal + (transport.cost * transport.days);
     const totalWithFees = calculateFees(totalWithTransport, paymentMethod);
+    const installmentValue = calculateInstallmentValue(totalWithTransport, paymentMethod.installments);
     
     setTotals({
       uniqueTotal: totalWithTransport,
       monthlyTotal: calculatedTotals.monthlyTotal,
       paidTrafficTotal: calculatedTotals.paidTrafficTotal,
-      withFees: totalWithFees
+      withFees: totalWithFees,
+      installmentValue: installmentValue
     });
   }, [selectedServices, paymentMethod, transport]);
 
@@ -90,10 +93,10 @@ export const Summary: React.FC<SummaryProps> = ({
             {paymentMethod.type === 'credit' && paymentMethod.installments > 1 && (
               <div className="flex justify-between items-center mb-2">
                 <span className="text-white/90 font-medium">
-                  Total com taxas ({paymentMethod.installments}x):
+                  Parcelado em {paymentMethod.installments}x de:
                 </span>
                 <span className="text-white font-semibold">
-                  R$ {totals.withFees.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                  R$ {totals.installmentValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                 </span>
               </div>
             )}
