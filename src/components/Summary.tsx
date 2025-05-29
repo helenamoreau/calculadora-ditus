@@ -50,7 +50,7 @@ export const Summary: React.FC<SummaryProps> = ({
         <>
           <div className="space-y-3 mb-6">
             <div className="flex justify-between items-center">
-              <span className="text-white/80">Valor único total:</span>
+              <span className="text-white/80">Valor da entrada:</span>
               <span className="text-white font-medium">
                 {totals.uniqueTotal > 0 
                   ? `R$ ${totals.uniqueTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` 
