@@ -3,13 +3,33 @@ import { SelectedService, PaymentMethod } from '../types';
 export const calculateTotals = (selectedServices: SelectedService[]) => {
   const totals = selectedServices.reduce(
     (acc, service) => {
+      let entry = service.prices.entry || 0;
+      let oneTime = service.prices.oneTime || 0;
+      let monthly = service.prices.monthly || 0;
+      
       // Calculate paid traffic budget if applicable
       const paidTrafficBudget = service.options?.monthlyBudget || 0;
 
+      // Special handling for Templates Editáveis
+      if (service.id === 'social-templates' && service.options.templateTypes) {
+        oneTime = service.options.templateTypes.reduce((total: number, type: string) => {
+          switch (type) {
+            case 'instagram':
+              return total + 2490;
+            case 'youtube':
+              return total + 1340;
+            case 'linkedin':
+              return total + 940;
+            default:
+              return total;
+          }
+        }, 0);
+      }
+
       return {
-        entry: acc.entry + (service.prices.entry || 0),
-        oneTime: acc.oneTime + (service.prices.oneTime || 0),
-        monthly: acc.monthly + (service.prices.monthly || 0),
+        entry: acc.entry + entry,
+        oneTime: acc.oneTime + oneTime,
+        monthly: acc.monthly + monthly,
         paidTraffic: acc.paidTraffic + paidTrafficBudget
       };
     },
