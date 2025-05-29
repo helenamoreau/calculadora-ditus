@@ -69,7 +69,7 @@ export const Summary: React.FC<SummaryProps> = ({
             
             {totals.paidTrafficTotal > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-white/80">Tráfego pago (com 5%):</span>
+                <span className="text-white/80">Tráfego pago:</span>
                 <span className="text-white font-medium">
                   R$ {totals.paidTrafficTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}/mês
                 </span>

@@ -3,27 +3,27 @@ import { SelectedService, PaymentMethod } from '../types';
 export const calculateTotals = (selectedServices: SelectedService[]) => {
   const totals = selectedServices.reduce(
     (acc, service) => {
-      // Calculate paid traffic fee if applicable
-      let paidTrafficFee = 0;
-      if (service.options?.monthlyBudget) {
-        paidTrafficFee = service.options.monthlyBudget * 0.05; // 5% fee
-      }
+      // Calculate paid traffic budget if applicable
+      const paidTrafficBudget = service.options?.monthlyBudget || 0;
 
       return {
         entry: acc.entry + (service.prices.entry || 0),
         oneTime: acc.oneTime + (service.prices.oneTime || 0),
-        monthly: acc.monthly + (service.prices.monthly || 0) + paidTrafficFee,
-        paidTraffic: acc.paidTraffic + (service.options?.monthlyBudget || 0)
+        monthly: acc.monthly + (service.prices.monthly || 0),
+        paidTraffic: acc.paidTraffic + paidTrafficBudget
       };
     },
     { entry: 0, oneTime: 0, monthly: 0, paidTraffic: 0 }
   );
 
+  // Calculate 5% fee for paid traffic and add it to monthly total
+  const paidTrafficFee = totals.paidTraffic * 0.05;
+
   return {
     ...totals,
     uniqueTotal: totals.entry + totals.oneTime, // Total of one-time payments and entry fees
-    monthlyTotal: totals.monthly, // Total monthly recurring payments
-    paidTrafficTotal: totals.paidTraffic + (totals.paidTraffic * 0.05) // Total paid traffic including 5% fee
+    monthlyTotal: totals.monthly + paidTrafficFee, // Total monthly recurring payments including paid traffic fee
+    paidTrafficTotal: totals.paidTraffic // Total paid traffic budget without fee
   };
 };
 
