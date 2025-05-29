@@ -1,85 +1,162 @@
 import React, { useRef } from 'react';
-import { X, Printer, Mail } from 'lucide-react';
-import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment } from '../types';
+import { X, Printer, Mail, Download, Send } from 'lucide-react';
+import { SelectedService, PaymentMethod, ClientInfo, RecurringPayment, TransportInfo } from '../types';
 import { calculateTotals, calculateFees } from '../utils/calculations';
 import { getCategoryById } from '../data/servicesData';
+import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 interface BudgetDetailsProps {
   selectedServices: SelectedService[];
   paymentMethod: PaymentMethod;
   clientInfo: ClientInfo;
   recurringPayment: RecurringPayment;
+  transport: TransportInfo;
   onClose: () => void;
 }
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 30,
+    fontFamily: 'Helvetica'
+  },
+  header: {
+    marginBottom: 20,
+    borderBottom: '1 solid #ccc',
+    paddingBottom: 10
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 10
+  },
+  clientInfo: {
+    marginBottom: 20
+  },
+  service: {
+    marginBottom: 10
+  },
+  totals: {
+    marginTop: 20,
+    borderTop: '1 solid #ccc',
+    paddingTop: 10
+  }
+});
+
+const BudgetPDF = ({ selectedServices, clientInfo, totals }: any) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Orçamento Ditus Marketing</Text>
+        <Text>Data: {new Date().toLocaleDateString('pt-BR')}</Text>
+      </View>
+      
+      <View style={styles.clientInfo}>
+        <Text>Negócio: {clientInfo.businessName}</Text>
+        <Text>Nome: {clientInfo.contactName}</Text>
+        <Text>WhatsApp: {clientInfo.whatsapp}</Text>
+      </View>
+      
+      {selectedServices.map((service: SelectedService, index: number) => (
+        <View key={index} style={styles.service}>
+          <Text>{service.name}</Text>
+          {service.prices.entry > 0 && (
+            <Text>Entrada: R$ {service.prices.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</Text>
+          )}
+          {service.prices.monthly > 0 && (
+            <Text>Mensal: R$ {service.prices.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</Text>
+          )}
+          {service.prices.oneTime > 0 && (
+            <Text>Único: R$ {service.prices.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</Text>
+          )}
+        </View>
+      ))}
+      
+      <View style={styles.totals}>
+        <Text>Total Entrada: R$ {totals.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</Text>
+        <Text>Total Mensal: R$ {totals.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
   selectedServices,
   paymentMethod,
   clientInfo,
   recurringPayment,
+  transport,
   onClose
 }) => {
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const handlePrint = () => {
-    const content = printRef.current;
-    if (!content) return;
-    
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
-    
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Orçamento Ditus Marketing</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .logo { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-            .title { font-size: 20px; margin-bottom: 20px; }
-            .service-group { margin-bottom: 15px; }
-            .group-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
-            .service-item { padding: 5px 0; border-bottom: 1px solid #eee; }
-            .service-name { font-weight: bold; }
-            .option { color: #666; margin-left: 20px; }
-            .price { text-align: right; }
-            .totals { margin-top: 20px; border-top: 2px solid #ddd; padding-top: 10px; }
-            .total-row { display: flex; justify-content: space-between; margin: 5px 0; }
-            .total-label { font-weight: bold; }
-            .payment-info { margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
-            .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
-          </style>
-        </head>
-        <body>
-          ${content.innerHTML}
-          <div class="footer">
-            <p>Ditus Marketing - Av. Paulista, 1636, sala 1504, São Paulo - SP, CEP 01310-200</p>
-            <p>© 2025 Ditus Marketing. Todos os direitos reservados.</p>
-            <p>Orçamento válido por 10 dias. A entrada é paga no 1º mês; as mensalidades começam no 2º mês.</p>
-          </div>
-        </body>
-      </html>
-    `);
-    
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-  };
-
   const totals = calculateTotals(selectedServices);
   const totalUnique = totals.entry + totals.oneTime;
   const totalWithFees = calculateFees(totalUnique, paymentMethod);
-  
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
+
+  const formatWhatsAppMessage = () => {
+    let message = "Olá, tenho interesse nesse orçamento\n\n";
+    
+    if (clientInfo.businessName) {
+      message += `*Negócio:* ${clientInfo.businessName}\n`;
+    }
+    if (clientInfo.contactName) {
+      message += `*Nome:* ${clientInfo.contactName}\n`;
+    }
+    if (clientInfo.whatsapp) {
+      message += `*WhatsApp:* ${clientInfo.whatsapp}\n`;
+    }
+    
+    message += "\n*Serviços Selecionados:*\n";
+    selectedServices.forEach(service => {
+      message += `\n*${service.name}*`;
+      if (service.prices.entry > 0) {
+        message += `\nEntrada: R$ ${service.prices.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
+      if (service.prices.monthly > 0) {
+        message += `\nMensal: R$ ${service.prices.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
+      if (service.prices.oneTime > 0) {
+        message += `\nÚnico: R$ ${service.prices.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
     });
+    
+    message += "\n\n*Totais:*";
+    message += `\n*Total Entrada:* R$ ${totals.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    message += `\n*Total Mensal:* R$ ${totals.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    
+    return encodeURIComponent(message);
   };
 
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + 10);
+  const formatEmailBody = () => {
+    let body = `Orçamento Ditus Marketing\n\n`;
+    
+    if (clientInfo.businessName) {
+      body += `Negócio: ${clientInfo.businessName}\n`;
+    }
+    if (clientInfo.contactName) {
+      body += `Nome: ${clientInfo.contactName}\n`;
+    }
+    if (clientInfo.whatsapp) {
+      body += `WhatsApp: ${clientInfo.whatsapp}\n`;
+    }
+    
+    body += "\nServiços Selecionados:\n";
+    selectedServices.forEach(service => {
+      body += `\n${service.name}`;
+      if (service.prices.entry > 0) {
+        body += `\nEntrada: R$ ${service.prices.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
+      if (service.prices.monthly > 0) {
+        body += `\nMensal: R$ ${service.prices.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
+      if (service.prices.oneTime > 0) {
+        body += `\nÚnico: R$ ${service.prices.oneTime.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      }
+    });
+    
+    body += "\n\nTotais:";
+    body += `\nTotal Entrada: R$ ${totals.entry.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    body += `\nTotal Mensal: R$ ${totals.monthly.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    
+    return encodeURIComponent(body);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-y-auto">
@@ -94,30 +171,46 @@ export const BudgetDetails: React.FC<BudgetDetailsProps> = ({
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-2xl font-bold text-gray-800">Detalhes do Orçamento</h2>
           
-          <div className="flex space-x-2">
-            <button
-              onClick={handlePrint}
-              className="flex items-center px-3 py-1.5 bg-purple-700 text-white rounded hover:bg-purple-800"
+          <div className="flex space-x-3">
+            <a
+              href={`https://wa.me/5511914702496?text=${formatWhatsAppMessage()}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             >
-              <Printer size={16} className="mr-1" />
-              Imprimir
-            </button>
+              <Send size={16} className="mr-2" />
+              WhatsApp
+            </a>
             
-            <button
-              className="flex items-center px-3 py-1.5 bg-gray-700 text-white rounded hover:bg-gray-800"
+            <a
+              href={`mailto:comercial@ditus.com.br?subject=NOVO ORÇAMENTO&body=${formatEmailBody()}`}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              <Mail size={16} className="mr-1" />
-              Enviar por Email
-            </button>
+              <Mail size={16} className="mr-2" />
+              E-mail
+            </a>
+            
+            <PDFDownloadLink
+              document={<BudgetPDF selectedServices={selectedServices} clientInfo={clientInfo} totals={totals} />}
+              fileName="orcamento-ditus.pdf"
+              className="flex items-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            >
+              {({ loading }) => (
+                <>
+                  <Download size={16} className="mr-2" />
+                  {loading ? 'Gerando...' : 'PDF'}
+                </>
+              )}
+            </PDFDownloadLink>
           </div>
         </div>
         
-        <div ref={printRef} className="p-6">
+        <div className="p-6">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-[#5C005C] mb-1">Ditus Marketing</h1>
             <p className="text-xl font-medium text-gray-700">Orçamento Personalizado</p>
             <p className="text-gray-500 mt-2">
-              Data: {formatDate(new Date())} | Válido até: {formatDate(expirationDate)}
+              Data: {new Date().toLocaleDateString('pt-BR')} | Válido até: {new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}
             </p>
           </div>
           
