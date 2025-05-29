@@ -97,6 +97,14 @@ export const TransportCalculator: React.FC<TransportCalculatorProps> = ({
     }));
   };
 
+  const handleDaysInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value) || 1;
+    setTransport(prev => ({
+      ...prev,
+      days: Math.max(1, value)
+    }));
+  };
+
   return (
     <div className="bg-gradient-to-br from-[#2a1333] to-[#1a0c20] rounded-lg shadow-lg transition-all duration-300 ease-in-out">
       <div 
@@ -241,7 +249,13 @@ export const TransportCalculator: React.FC<TransportCalculatorProps> = ({
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="text-white font-medium">{transport.days}</span>
+                  <input
+                    type="number"
+                    value={transport.days}
+                    onChange={handleDaysInput}
+                    min={1}
+                    className="bg-transparent text-white text-center w-16 focus:outline-none focus:ring-1 focus:ring-[#5C005C] rounded"
+                  />
                   <button
                     onClick={() => handleDaysChange(true)}
                     className="bg-[#5C005C] hover:bg-[#4a004a] text-white p-2 rounded"

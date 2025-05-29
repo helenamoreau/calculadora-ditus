@@ -53,6 +53,12 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
     });
   };
 
+  const handleInputChange = (option: any, e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value) || 0;
+    const constrainedValue = Math.max(option.min || 0, Math.min(option.max || Infinity, value));
+    handleOptionChange(option.id, constrainedValue);
+  };
+
   const renderQuantityControl = (option: any) => {
     const value = selectedOptions[option.id] || option.default || option.min || 0;
     
@@ -65,7 +71,14 @@ export const ServiceItem: React.FC<ServiceItemProps> = ({
         >
           <Minus size={16} />
         </button>
-        <span className="text-white min-w-[40px] text-center">{value}</span>
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => handleInputChange(option, e)}
+          className="bg-transparent text-white text-center w-16 focus:outline-none focus:ring-1 focus:ring-[#5C005C] rounded"
+          min={option.min || 0}
+          max={option.max}
+        />
         <button
           type="button"
           onClick={() => handleOptionChange(option.id, Math.min(option.max || Infinity, value + 1))}
